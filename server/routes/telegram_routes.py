@@ -5,9 +5,9 @@ from telegram import Update
 
 router = APIRouter()
 
-
 @router.post(TELEGRAM_PATH)
 async def webhook(request: Request):
+    print(request.headers)
     if TELEGRAM_SECRET_TOKEN:
         header_token = request.headers.get("X-Telegram-Bot-Api-Secret-Token")
         if header_token != TELEGRAM_SECRET_TOKEN:

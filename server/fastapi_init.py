@@ -4,12 +4,13 @@ from contextlib import asynccontextmanager
 from bot.bot_init import init_bot
 from config.config import WEBHOOK_URL, TELEGRAM_PATH, TELEGRAM_SECRET_TOKEN
 from telegram import Update
-from server import telegram_router
+from server import telegram_router, webapp_router
 
 
 def init_fastapi():
     app = FastAPI(lifespan=lifespan)
     app.include_router(telegram_router)
+    app.include_router(webapp_router)
     @app.get("/")
     async def read_root():
         return {"message": "Hello, World!"}
