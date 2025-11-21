@@ -5,6 +5,7 @@ from bot.bot_init import init_bot
 from config.config import WEBHOOK_URL, TELEGRAM_PATH, TELEGRAM_SECRET_TOKEN
 from telegram import Update
 from server import telegram_router, webapp_router
+from db.database import init_db
 
 
 def init_fastapi():
@@ -21,6 +22,7 @@ def init_fastapi():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Что будет происходить при запуске сервера
+    await init_db()
     bot_app = init_bot()
     app.state.bot_app = bot_app
     await bot_app.initialize()
