@@ -6,6 +6,8 @@ from logs.logger import logger
 
 router = APIRouter()
 
-@router.get(WEBAPP_PATH)
-async def webapp(request: Request):
-    return FileResponse("./templates/index.html")
+@router.post('/pay')
+async def pay_confirm(request: Request):
+    data = await request.form()
+    logger.info(data)
+    return Response(status_code=status.HTTP_200_OK)

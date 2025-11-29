@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Request, Response, status
-from config.config import TELEGRAM_PATH, TELEGRAM_SECRET_TOKEN
+from config.config import TELEGRAM_PATH, TELEGRAM_SECRET_TOKEN, WEBAPP_PATH
 from logs.logger import logger
 from telegram import Update
+from fastapi.responses import FileResponse
 
 router = APIRouter()
+
 
 @router.post(TELEGRAM_PATH)
 async def webhook(request: Request):
@@ -19,6 +21,11 @@ async def webhook(request: Request):
     except Exception:
         return Response(status_code=status.HTTP_400_BAD_REQUEST)
     update = Update.de_json(payload, request.app.state.bot_app.bot)
-    
+
     await request.app.state.bot_app.update_queue.put(update)
     return Response(status_code=status.HTTP_200_OK)
+
+
+@router.get(WEBAPP_PATH)
+async def webapp(request: Request):
+    return FileResponse("./templates/index.html")

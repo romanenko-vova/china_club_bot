@@ -15,9 +15,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     if not user:
         user = await create_user(update.effective_user.id, update.effective_user.username)
     logger.info(f"Пользователь {user.id} ({user.username}) ({user.telegram_id}) ({user.created_at}) начал диалог")
-    user = await update_user_username(user.telegram_id, 'биба')
-    logger.info(f"Пользователь {user.id} ({user.username}) ({user.telegram_id}) ({user.created_at}) начал диалог")
-    await delete_user(user.telegram_id)
+    # await update_user_username(update.effective_user.id, 'биба')
     keyboard = [
         [
             InlineKeyboardButton(
