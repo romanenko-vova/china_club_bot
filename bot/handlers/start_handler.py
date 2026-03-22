@@ -15,12 +15,30 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     if not user:
         user = await create_user(update.effective_user.id, update.effective_user.username)
     logger.info(f"Пользователь {user.id} ({user.username}) ({user.telegram_id}) ({user.created_at}) начал диалог")
-    # await update_user_username(update.effective_user.id, 'биба')
+    
     keyboard = [
         [
             InlineKeyboardButton(
-                "Открыть веб-приложение",
-                web_app=WebAppInfo(url=WEBHOOK_URL + WEBAPP_PATH),
+                "1 месяц — 1490 ₽",
+                web_app=WebAppInfo(url=WEBHOOK_URL + WEBAPP_PATH + "?sub_type=1_month_rf"),
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "3 месяца — 3990 ₽",
+                web_app=WebAppInfo(url=WEBHOOK_URL + WEBAPP_PATH + "?sub_type=3_month_rf"),
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "6 месяцев — 6990 ₽",
+                web_app=WebAppInfo(url=WEBHOOK_URL + WEBAPP_PATH + "?sub_type=6_month_rf"),
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "12 месяцев — 11990 ₽",
+                web_app=WebAppInfo(url=WEBHOOK_URL + WEBAPP_PATH + "?sub_type=12_month_rf"),
             )
         ]
     ]

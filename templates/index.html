@@ -5,31 +5,425 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://telegram.org/js/telegram-web-app.js?59"></script>
     <script src="https://widget.cloudpayments.ru/bundles/cloudpayments.js"></script>
-    <title>Тут платить</title>
+    <title>Китайский online</title>
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap");
+
+      :root {
+        --bg-dark: #a53f1f;
+        --bg-light: #ffe6d5;
+        --text-main: #faf7f2;
+        --text-secondary: #ffe3c4;
+        --accent: #f8a85b;
+        --card: #0d0c0b;
+        --input-bg: rgba(255, 255, 255, 0.08);
+        --border: rgba(255, 255, 255, 0.15);
+        --success: #6ad59b;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
       body {
-        background-color: red;
+        font-family: "Montserrat", system-ui, -apple-system, sans-serif;
+        background: radial-gradient(120% 120% at 20% 20%, #e66f2f 0%, var(--bg-dark) 65%),
+          radial-gradient(80% 80% at 90% 10%, #f2b86d 0%, rgba(241, 185, 109, 0) 60%);
+        min-height: 100vh;
+        max-height: 100vh;
+        color: var(--text-main);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 14px;
+        position: relative;
+        overflow: hidden;
       }
-      h1 {
-        color: white;
+
+      body::before,
+      body::after {
+        content: "";
+        position: absolute;
+        width: 420px;
+        height: 420px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.06);
+        z-index: 0;
+        filter: blur(0.5px);
       }
-      .email-text {
-        font-size: 20px;
+
+      body::before {
+        top: -160px;
+        right: -40px;
       }
-      #email-input {
+
+      body::after {
+        bottom: -120px;
+        left: -120px;
+      }
+
+      .shell {
         width: 100%;
+        max-width: 1040px;
+        max-height: calc(100vh - 28px);
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid var(--border);
+        border-radius: 28px;
+        padding: 24px;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(8px);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+        z-index: 1;
+      }
+
+      .shell::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.05) 0 30%, transparent 35%),
+          radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.05) 0 35%, transparent 40%),
+          radial-gradient(circle at 50% 80%, rgba(255, 255, 255, 0.04) 0 40%, transparent 45%);
+        pointer-events: none;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 18px;
+        align-items: center;
+      }
+
+      .hero {
+        position: relative;
+        padding: 8px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text-secondary);
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-size: 13px;
+        letter-spacing: 0.01em;
+        border: 1px solid var(--border);
+        margin-bottom: 14px;
+      }
+
+      .badge::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        background: var(--success);
+        border-radius: 50%;
+        box-shadow: 0 0 0 8px rgba(106, 213, 155, 0.12);
+      }
+
+      .title {
+        font-size: clamp(32px, 5vw, 44px);
+        line-height: 1.1;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.01em;
+        margin-bottom: 12px;
+      }
+
+      .subtitle {
+        color: var(--text-secondary);
+        font-weight: 500;
+        margin-bottom: 18px;
+        line-height: 1.35;
+      }
+
+      .features {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+
+      .pill {
+        padding: 8px 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        color: var(--text-main);
+        background: rgba(0, 0, 0, 0.25);
+        font-size: 13px;
+      }
+
+      .price {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        padding: 10px 14px;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        margin-bottom: 14px;
+        min-height: 44px;
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      .price small {
+        color: var(--text-secondary);
+        font-weight: 600;
+        letter-spacing: 0.01em;
+      }
+
+      .form-card {
+        background: var(--card);
+        border-radius: 20px;
+        padding: 16px;
+        border: 1px solid var(--border);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .form-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 80% 20%, rgba(248, 168, 91, 0.15), transparent 40%);
+        pointer-events: none;
+      }
+
+      label {
+        display: block;
+        color: var(--text-secondary);
+        font-size: 14px;
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+
+      .input {
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: var(--input-bg);
+        color: var(--text-main);
+        font-size: 15px;
+        outline: none;
+        transition: border 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      .input:focus {
+        border: 1px solid var(--accent);
+        box-shadow: 0 0 0 4px rgba(248, 168, 91, 0.25);
+      }
+
+      .hint {
+        margin-top: 8px;
+        color: var(--text-secondary);
+        font-size: 13px;
+        line-height: 1.35;
+      }
+
+      .button {
+        width: 100%;
+        margin-top: 12px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #f2b86d, #f08636);
+        color: #1b0b00;
+        border: none;
+        font-weight: 700;
+        font-size: 15px;
+        cursor: pointer;
+        transition: transform 0.12s ease, box-shadow 0.12s ease;
+      }
+
+      .button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+      }
+
+      .button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+
+      .photo {
+        position: relative;
+        width: min(340px, 100%);
+        justify-self: center;
+      }
+
+      .photo .frame {
+        position: relative;
+        border-radius: 28px;
+        overflow: hidden;
+        border: 2px solid rgba(255, 255, 255, 0.14);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+      }
+
+      .photo img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        max-height: 420px;
+      }
+
+      .photo .overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, transparent 35%, rgba(0, 0, 0, 0.35));
+        pointer-events: none;
+      }
+
+      .floating {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: rgba(0, 0, 0, 0.55);
+        border-radius: 12px;
+        padding: 8px 10px;
+        border: 1px solid var(--border);
+        color: var(--text-secondary);
+        font-size: 12px;
+        backdrop-filter: blur(6px);
+      }
+
+      .badge-corner {
+        position: absolute;
+        left: -18px;
+        bottom: 14px;
+        background: #f2b86d;
+        color: #1b0b00;
+        font-weight: 700;
+        padding: 7px 12px;
+        border-radius: 999px;
+        transform: rotate(-6deg);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+      }
+
+      @media (max-width: 720px) {
+        body {
+          padding: 14px 10px;
+        }
+        .shell {
+          padding: 16px;
+          max-height: calc(100vh - 20px);
+        }
+        .grid {
+          gap: 12px;
+        }
+        .title {
+          font-size: 28px;
+        }
+        .subtitle {
+          font-size: 14px;
+          margin-bottom: 12px;
+        }
+        .features {
+          gap: 6px;
+        }
+        .pill {
+          font-size: 12px;
+          padding: 7px 10px;
+        }
+        .photo {
+          width: 100%;
+          max-width: 320px;
+          margin: 0 auto;
+        }
+        .photo img {
+          max-height: 320px;
+        }
+        .floating {
+          font-size: 11px;
+          padding: 7px 9px;
+        }
+        .badge-corner {
+          font-size: 13px;
+        }
+        .form-card {
+          padding: 14px;
+        }
       }
     </style>
   </head>
   <body>
-    <h1>Тут платить</h1>
-    <p class="email-text">Напиши свой email</p>
-    <input type="text" id="email-input" />
+    <div class="shell">
+      <div class="grid">
+        <div class="hero">
+          <div class="badge">Быстро тестируем твой уровень</div>
+          <div class="title">Китайский ONLINE</div>
+          <div class="subtitle">Ты уже взрослый — пора говорить. Заходи на уроки и двигайся к уверенным разговорам на мандаринском.</div>
+
+          <div class="features">
+            <div class="pill">10+ лет опыта</div>
+            <div class="pill">Живые разговоры</div>
+            <div class="pill">Гибкий график</div>
+          </div>
+
+          <div class="price">
+            <span id="sub-type-text">Выбери подписку в боте</span>
+            <small id="sub-hint"></small>
+          </div>
+
+          <div class="form-card">
+            <label for="email-input">Твой email</label>
+            <input class="input" id="email-input" type="email" placeholder="name@mail.ru" autocomplete="email" />
+            <p class="hint">Мы пришлём чек и доступ к занятиям на этот адрес.</p>
+            <button class="button" id="pay-button" disabled>Оплатить через Telegram</button>
+          </div>
+        </div>
+
+        <div class="photo">
+          <div class="frame">
+            <img src="https://i.imgur.com/WMkHgqF.jpeg" alt="Автор курса" />
+            <div class="overlay"></div>
+            <div class="floating">Онлайн-уроки · Индивидуально</div>
+            <div class="badge-corner">Говорим вместе</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <script>
       const tg = window.Telegram.WebApp;
       tg.ready();
       tg.expand();
+
+      const subType = new URLSearchParams(window.location.search).get("sub_type");
+      if (!subType) {
+        alert("Зайтите, пожалуйста на этот сайт, через кнопку в боте https://t.me/romanenko_uchit_lead_bot")
+      }
+      else {
+        const price = document.getElementById("sub-type-text");
+        const hint = document.getElementById("sub-hint");
+        if (subType === "1_month_rf") {
+          price.textContent = "1 месяц — 1490 ₽";
+          hint.textContent = "Оплачивается ежемесячно";
+        } else if (subType === "3_month_rf") {
+          price.textContent = "3 месяца — 3990 ₽";
+          hint.textContent = "Экономия 480 ₽";
+        } else if (subType === "6_month_rf") {
+          price.textContent = "6 месяцев — 6990 ₽";
+          hint.textContent = "Экономия 1 950 ₽";
+        } else if (subType === "12_month_rf") {
+          price.textContent = "12 месяцев — 11990 ₽";
+          hint.textContent = "Лучшее предложение";
+        } else {
+          alert("Неизвестный тип подписки. Зайдите, пожалуйста на этот сайт, через кнопку в боте https://t.me/romanenko_uchit_lead_bot");
+        }
+      }
+
 
       function emailCheck(email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -38,7 +432,11 @@
 
       const emailInput = document.getElementById("email-input");
       async function runPay() {
-        alert("pay");
+        if (!emailCheck(emailInput.value)) {
+          alert("Введи корректный email");
+          return;
+        }
+
         const widget = new cp.CloudPayments();
 
         fetch("/api/order/create", {
@@ -46,22 +444,22 @@
           body: JSON.stringify({
             telegram_id: tg.initDataUnsafe.user.id,
             email: emailInput.value,
+            sub_type: subType,
           }),
         })
           .then((response) => response.json())
           .then((data) => {
-            alert(data.invoice_id)
             widget.charge({
               email: emailInput.value,
               publicId: data.public_id,
-              description: "Оплата подписки",
-              amount: 100,
+              description: data.description,
+              amount: data.amount,
               currency: "RUB",
               accountId: "1",
               invoiceId: data.invoice_id,
               data: {
                 CloudPayments: {
-                  recurrent: { interval: "Month", period: 1 },
+                  recurrent: { interval: "Month", period: data.period },
                 },
               },
             });
@@ -69,12 +467,21 @@
       }
 
       emailInput.addEventListener("input", (event) => {
-        if (emailCheck(event.target.value)) {
+        const isOk = emailCheck(event.target.value);
+        const payButton = document.getElementById("pay-button");
+
+        payButton.disabled = !isOk;
+
+        if (isOk) {
           tg.MainButton.setParams({
             text: "Оплатить",
             is_visible: true,
           });
           tg.MainButton.onClick(runPay);
+          payButton.onclick = runPay;
+        } else {
+          tg.MainButton.hide();
+          payButton.onclick = null;
         }
       });
     </script>
