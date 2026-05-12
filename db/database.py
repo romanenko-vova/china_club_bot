@@ -6,9 +6,10 @@ from sqlalchemy.orm import sessionmaker
 from typing import AsyncGenerator
 from db.models import Base
 from contextlib import asynccontextmanager
+from config.config import DATABASE_URL
 
-
-engine = create_async_engine("sqlite+aiosqlite:///database.db", echo=True)
+# postgresql+asyncpg://<user>:<password>@<host>:<port>/<database>
+engine = create_async_engine(DATABASE_URL, echo=True)
 
 async_session_maker = sessionmaker(
     engine, expire_on_commit=False, class_=AsyncSession

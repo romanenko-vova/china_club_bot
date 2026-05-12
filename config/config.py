@@ -11,3 +11,5 @@ TELEGRAM_SECRET_TOKEN = os.getenv("TELEGRAM_SECRET_TOKEN")
 WEBAPP_PATH = os.getenv("WEBAPP_PATH")
 
 CP_PUBLIC_ID = os.getenv("CP_PUBLIC_ID")
+
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///database.db")
