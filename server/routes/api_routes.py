@@ -16,7 +16,7 @@ async def pay_confirm(request: Request):
     data = await request.json()
     user = await update_user_email(data["telegram_id"], data["email"])
     invoice_id = str(uuid4())
-    sub_type = data["sub_type"]
+    sub_type = data.get("sub_type")
     payment = await create_payment(user.id, sub_type, invoice_id)
     logger.info(
         f"Платеж создан: {payment.user.email} — {payment.sub_type} — {payment.invoice_id}"
